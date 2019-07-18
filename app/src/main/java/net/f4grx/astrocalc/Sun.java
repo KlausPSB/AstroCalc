@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 public class Sun {
     // http://www.geoastro.de/elevaz/basics/meeus.htm#solar
+    // additions from view-source:http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
 
     // get [ra dec] of sun at given julian date
     public static double[] pos(double JD) {
@@ -33,8 +34,13 @@ public class Sun {
         //(the ecliptic latitude of the Sun is assumed to be zero):
 
         // obliquity eps of ecliptic:
-        double eps = 23.0 + 26.0/60.0 + 21.448/3600.0 - (46.8150*T + 0.00059*T*T - 0.001813*T*T*T)/3600;
+        double eps0 = 23.0 + 26.0/60.0 + 21.448/3600.0 - (46.8150*T + 0.00059*T*T - 0.001813*T*T*T)/3600;
 
+        double omega = 125.04 - 1934.136*T;
+        double lambda = L - 0.00569 - 0.00478*Math.sin(k*omega);
+        double eps = eps0 + 0.00256*Math.cos(k*omega);
+
+        /*
         double X = Math.cos(k*L);
         double Y = Math.cos(k*eps)*Math.sin(k*L);
         double Z = Math.sin(k*eps)*Math.sin(k*L);
@@ -42,7 +48,11 @@ public class Sun {
 
         double delta = Math.atan2(Z,R)/k; // in degrees
         double RA = 2.0*Math.atan2(Y,(X+R))/k; // in degrees
-
+*/
+        double delta = Math.sin(k*eps)*Math.sin(k*lambda);
+        delta = Math.asin(delta)/k;
+        double RA = Math.atan2(Math.cos(k*eps)*Math.sin(k*lambda), Math.cos(k*lambda))/k;
+        if (RA<0) RA=RA+360;
         return new double[] {RA, delta};
     }
 }

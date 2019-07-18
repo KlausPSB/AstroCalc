@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class HorizonCoords {
     private double jd;
-    private double rlat, rlon; // in rads
+    private double lat, lon; // in degs
 
     private double k = Math.PI/180.0;
 
@@ -19,23 +19,27 @@ public class HorizonCoords {
     }
 
     public void setPos(double lat, double lon) {
-        rlat = lat*k;
-        rlon = lon*k;
+        this.lat = lat;
+        this.lon = lon;
     }
 
-    //return alt, az in degrees, input is radec in degrees
-    public double[] toHorizontal(double[] radec) {
-        double sid = TimeUtil.siderealGreenwich(jd);
+    //return alt, az in degrees, input is radec_deg in degrees
+    public double[] toHorizontal(double[] radec_deg) {
+        double sidtime = TimeUtil.sidereal(jd, lon);
+        double sidangle = sidtime * 15.0;
 
-        double  tau = (sid - radec[0]) * k;
-        double delta = radec[1] * k;
+        double tau = (sidangle - radec_deg[0]) * k; // in radians
+        double delta = radec_deg[1] * k; // in radians
 
-        tau += rlon;
+        double lat_rad = lat * k;
 
-        double sinh = Math.sin(rlat) * Math.sin(delta) + Math.cos(rlat) * Math.cos(delta) * Math.cos(tau);
+        double sinh = Math.sin(lat_rad) * Math.sin(delta) + Math.cos(lat_rad) * Math.cos(delta) * Math.cos(tau);
         double tanaztop = -Math.sin(tau);
-        double tanazbot = Math.cos(rlat) * Math.tan(delta) - Math.sin(rlat) * Math.cos(tau);
+        double tanazbot = Math.cos(lat_rad) * Math.tan(delta) - Math.sin(lat_rad) * Math.cos(tau);
 
-        return new double[]{Math.asin(sinh)/k, Math.atan2(tanaztop, tanazbot)/k};
+        double az = Math.atan2(tanaztop,tanazbot)/k;
+        if(az < 0) az += 360;
+
+        return new double[]{Math.asin(sinh)/k, az};
     }
 }

@@ -89,10 +89,10 @@ public class MainActivity extends AppCompatActivity {
         String locator = Locator.fromCoords(lat, lon);
         txtLocator.setText(locator==null?"N/A":locator);
 
-        double sa = TimeUtil.siderealGreenwich(jd) + lon ;
-        txtSiderealAngle.setText(Double.toString(sa));
+        double sa = TimeUtil.sidereal(jd, lon);
+        txtSiderealAngle.setText(Double.toString(sa*15));
 
-        int[] st = TimeUtil.dms(sa/15);
+        int[] st = TimeUtil.dms(sa);
         txtSiderealTime.setText(st[0]+":"+st[1]+":"+st[2]+"."+st[3]);
 
         double[] sunradec = Sun.pos(jd);
