@@ -2,6 +2,7 @@ package net.f4grx.astrocalc;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
     @Override protected void onResume() {
         super.onResume();
         Log.i(TAG, "OnResume");
+
+        loadLatLon();
         timer = new Timer();
         tsk = new TimerTask() {
             public void run() {
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 if(res != null && res.length == 2) {
                     lat = res[0];
                     lon = res[1];
+                    saveLatLon();
                 }
             }
         });
@@ -163,5 +167,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+
+    private void saveLatLon() {
+        SharedPreferences prefs = getSharedPreferences("PREFS", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        String pos = String.valueOf(lat)+","+String.valueOf(lon);
+        edit.putString("POS", pos);
+        edit.commit();
+    }
+
+    private void loadLatLon() {
+        SharedPreferences prefs = getSharedPreferences("PREFS", MODE_PRIVATE);
+        String pos = prefs.getString("POS", null);
+        if(pos == null) {
+            return;
+        }
+        String[] parts = pos.split(",");
+        if(parts.length != 2) {
+            return;
+        }
+        lat = Double.parseDouble(parts[0]);
+        lon = Double.parseDouble(parts[1]);
     }
 }
