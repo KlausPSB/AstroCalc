@@ -25,7 +25,7 @@ public class HorizonCoords {
 
     //return alt, az in degrees, input is radec_deg in degrees
     public double[] toHorizontal(double[] radec_deg) {
-        double sidtime = TimeUtil.sidereal(jd, lon);
+        double sidtime = TimeUtil.siderealTime(jd, lon);
         double sidangle = sidtime * 15.0;
 
         double tau = (sidangle - radec_deg[0]) * k; // in radians
@@ -37,9 +37,10 @@ public class HorizonCoords {
         double tanaztop = -Math.sin(tau);
         double tanazbot = Math.cos(lat_rad) * Math.tan(delta) - Math.sin(lat_rad) * Math.cos(tau);
 
+        double el = Math.asin(sinh)/k;
         double az = Math.atan2(tanaztop,tanazbot)/k;
         if(az < 0) az += 360;
 
-        return new double[]{Math.asin(sinh)/k, az};
+        return new double[]{el, az};
     }
 }

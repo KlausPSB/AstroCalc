@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         String locator = Locator.fromCoords(lat, lon);
         txtLocator.setText(locator==null?"N/A":locator);
 
-        double sa = TimeUtil.sidereal(jd, lon);
+        double sa = TimeUtil.siderealTime(jd, lon);
         txtSiderealAngle.setText(Double.toString(sa*15));
 
         int[] st = TimeUtil.dms(sa);

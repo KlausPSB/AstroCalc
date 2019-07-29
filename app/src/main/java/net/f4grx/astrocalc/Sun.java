@@ -52,7 +52,10 @@ public class Sun {
         double delta = Math.sin(k*eps)*Math.sin(k*lambda);
         delta = Math.asin(delta)/k;
         double RA = Math.atan2(Math.cos(k*eps)*Math.sin(k*lambda), Math.cos(k*lambda))/k;
-        if (RA<0) RA=RA+360;
+        if (RA<0) {
+            RA=RA+360;
+        }
         return new double[] {RA, delta};
     }
+
 }
