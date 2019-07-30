@@ -54,7 +54,7 @@ public class Locator {
         return locator;
     }
 
-    /* Returns lat, lon of the south west corner, in that order */
+    /* Returns lat, lon of the center of the square, in that order */
     public static double[] decode(String str) {
         // view-source:https://www.egloff.eu/googlemap_v3/mhtolatlng.js
         double[] d = new double[2];
@@ -68,15 +68,43 @@ public class Locator {
         loca[2] += 17; loca[3] += 17;
         loca[6] += 17; loca[7] += 17;
 
-        if (str.length() == 6) {
-            d[0] = (loca[1] * 10 + loca[3] + loca[5] / 24.0d - 90);
-            d[1] = (loca[0] * 20 + loca[2] * 2 + loca[4] / 12.0d - 180);
-        } else if (str.length() == 8) {
-            d[0] = (loca[1]*10 + loca[3] + loca[5]/24.0d + loca[7]/240.0d - 90) ;
-            d[1] = (loca[0]*20 + loca[2]*2 + loca[4]/12.0d + loca[6]/120.0d - 180);
-        } else {
-            return null;
+        d[0] = 0;
+        d[1] = 0;
+        if(str.length() >= 2) {
+            d[0] += loca[1] * 10;
+            d[1] += loca[0] * 20;
         }
+        if(str.length() == 2) {
+            d[0] += 5;
+            d[1] += 10;
+        }
+        if(str.length() >= 4) {
+            d[0] += loca[3];
+            d[1] += loca[2] * 2;
+        }
+        if(str.length() == 4) {
+            d[0] += 0.5;
+            d[1] += 1;
+        }
+        if(str.length() >= 6) {
+            d[0] += loca[5] / 24.0d;
+            d[1] += loca[4] / 12.0d;
+        }
+        if(str.length() == 6) {
+            d[0] += 1/48.0d;
+            d[1] += 1/24.0d;
+        }
+        if(str.length() >= 8) {
+            d[0] += loca[7]/240.0d ;
+            d[1] += loca[6]/120.0d;
+        }
+        if(str.length() == 8) {
+            d[0] += 1/480.0d;
+            d[1] += 1/240.0d;
+        }
+
+        d[0] -= 90;
+        d[1] -= 180;
 
         return d;
     }

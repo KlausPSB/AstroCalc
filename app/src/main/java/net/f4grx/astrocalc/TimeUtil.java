@@ -4,11 +4,13 @@ import java.util.Calendar;
 
 public class TimeUtil {
 
-    //confirmed by http://www.csgnetwork.com/juliandatetodaycalc.html
-    //https://www.rgagnon.com/javadetails/java-0506.html
-
     // Gregorian Calendar adopted Oct. 15, 1582 (2299161)
     private static int JGREG = 15 + 31*(10+12*1582);
+
+    //official value here http://www.jgiesen.de/astro/astroJS/siderealClock/
+    // confirmed by http://www.csgnetwork.com/juliandatetodaycalc.html
+    //https://www.rgagnon.com/javadetails/java-0506.html
+    //also to be tested if that doesnt work: http://www.java2s.com/Code/Android/Date-Type/ConvertdatestoJuliandates.htm
 
     public static double JulianDay(Calendar d) {
 
